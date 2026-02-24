@@ -3,7 +3,7 @@
 CONFIGS := cadical bvcheck-lrat cake_lpr-lrat lrat_isa-lrat lrat-trim-lrat
 DATA:=$(addprefixlog-,$(addsuffix/data,$(CONFIGS)))
 
-data: log-cadical/data .WAIT $(DATA)
+data: $(DATA)
 	awk 'FNR==1 && NR!=1 { next } { print }' $^ > $@
 
 log-%/data: benchmarks-cadical
