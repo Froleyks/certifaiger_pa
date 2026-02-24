@@ -21,8 +21,15 @@ limit check "$checker" "$cnf" "$proof"
 t="$(($(date +%s%N) - t))"
 t="$(printf '%d.%09d' "$((t / 1000000000))" "$((t % 1000000000))")"
 status=unknown
-grep -q "VERIFIED" "$log".log && status="unsat"
+if grep -q "VERIFIED" "$log".log; then
+	status="unsat"
+elif rg "out of memory" "$log"*; then
+	status="memory"
+elif rg "out of time" "$log"*; then
+	status="time"
+elif ((res == 124)); then
+	status="time"
+fi
 
 echo RUN_HEAD: name time status
 echo RUN_RESULT: $name $t $status
-

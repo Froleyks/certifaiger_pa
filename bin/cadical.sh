@@ -39,11 +39,11 @@ for aig in *.aig; do
 	base="$(basename "$aig" .aig)"
 	cnf="$sat/$name-$base.cnf"
 	proof="$lrat/$name-$base.lrat"
-	trimmed="$trim/$name-$base.lrat"
+	# trimmed="$trim/$name-$base.lrat"
 
 	limit "$base"_aigtocnf aigtocnf "$aig" "$cnf"
 	limit "$base"_cadical cadical --lrat --no-factor --unsat --quiet "$cnf" "$proof"
-	limit "$base"_lrat-trim lrat-trim "$proof" "$trimmed"
+	# limit "$base"_lrat-trim lrat-trim "$proof" "$trimmed"
 done
 t="$(($(date +%s%N) - t))"
 t="$(printf '%d.%09d' "$((t / 1000000000))" "$((t % 1000000000))")"
