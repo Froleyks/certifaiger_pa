@@ -1,7 +1,7 @@
 -include config.mk
 
-CONFIGS := cadical bvcheck-lrat bvcheck-trim cake_lpr-lrat cake_lpr-trim lrat_isa-lrat lrat_isa-trim lrat-trim-lrat lrat-trim-trim
-DATA           := $(addprefix log-,$(addsuffix /data,$(CONFIGS)))
+CONFIGS := cadical bvcheck-lrat cake_lpr-lrat lrat_isa-lrat lrat-trim-lrat
+DATA:=$(addprefixlog-,$(addsuffix/data,$(CONFIGS)))
 
 data: log-cadical/data .WAIT $(DATA)
 	awk 'FNR==1 && NR!=1 { next } { print }' $^ > $@
