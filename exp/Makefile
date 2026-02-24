@@ -1,11 +1,13 @@
 -include config.mk
 
-CONFIGS := cadical bvcheck-lrat cake_lpr-lrat lrat_isa-lrat lrat-trim-lrat
+CONFIGS := bvcheck-lrat cake_lpr-lrat lrat_isa-lrat lrat-trim-lrat
 DATA    := $(addprefix log-,$(addsuffix /data,$(CONFIGS)))
 
-data: log-cadical/data .WAIT $(DATA)
+data: $(DATA)
 	awk 'FNR==1 && NR!=1 { next } { print }' $^ > $@
 
+cadical: log-cadical/data
+	cp $^ data-cadical
 log-%/data: benchmarks-cadical
 	../bin/parallel.sh benchmarks-$* log-$*
 
