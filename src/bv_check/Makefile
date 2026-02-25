@@ -1,5 +1,3 @@
-SHELL := bash
-.ONESHELL:
 NAME := $(notdir $(CURDIR))
 
 SIF       ?= $(NAME).sif

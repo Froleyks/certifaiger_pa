@@ -30,8 +30,12 @@ ENV PATH=/opt/lean/bin:$PATH
 WORKDIR /app
 COPY . .
 RUN lake build \
-    && install -D /app/.lake/build/bin/bv_check /out/bv_check \
-    && install -D /opt/lean/lib/libleanshared.so /out/lib/libleanshared.so
+    && install -D /app/.lake/build/bin/bv_check /out/usr/local/bin/bv_check \
+    && install -D /opt/lean/lib/lean/libleanshared.so /out/opt/lean/lib/lean/libleanshared.so \
+    && ldd /opt/lean/lib/lean/libleanshared.so \
+      | awk '{ if ($1 ~ /^\\/opt\\/lean\\/lib\\//) print $1; else if ($2 == "=>" && $3 ~ /^\\/opt\\/lean\\/lib\\//) print $3 }' \
+      | sort -u \
+      | xargs -r -I{} sh -c 'install -D "{}" "/out{}"'
 
 FROM debian:trixie-slim AS runtime
 
@@ -40,8 +44,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       libgmp10 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /out/bv_check /usr/local/bin/bv_check
-COPY --from=builder /out/lib/libleanshared.so /opt/lean/lib/libleanshared.so
-ENV LD_LIBRARY_PATH=/opt/lean/lib
+COPY --from=builder /out/usr/local/bin/bv_check /usr/local/bin/bv_check
+COPY --from=builder /out/opt/lean/lib /opt/lean/lib
+ENV LD_LIBRARY_PATH=/opt/lean/lib:/opt/lean/lib/lean
 
 CMD ["/usr/local/bin/bv_check"]
