@@ -33,7 +33,7 @@ RUN lake build \
     && install -D /app/.lake/build/bin/bv_check /out/usr/local/bin/bv_check \
     && install -D /opt/lean/lib/lean/libleanshared.so /out/opt/lean/lib/lean/libleanshared.so \
     && ldd /opt/lean/lib/lean/libleanshared.so \
-      | awk '{ if ($1 ~ /^\\/opt\\/lean\\/lib\\//) print $1; else if ($2 == "=>" && $3 ~ /^\\/opt\\/lean\\/lib\\//) print $3 }' \
+      | awk '{ if ($1 ~ /^\/opt\/lean\/lib\//) print $1; else if ($2 == "=>" && $3 ~ /^\/opt\/lean\/lib\//) print $3 }' \
       | sort -u \
       | xargs -r -I{} sh -c 'install -D "{}" "/out{}"'
 
