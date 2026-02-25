@@ -174,7 +174,7 @@ if command -v sbatch >/dev/null 2>&1; then
         "$ARRAY"
 
 elif command -v xargs >/dev/null 2>&1; then
-    printf "$banner using GNU parallel\n"
+    printf "$banner using xargs\n"
     cores=$(
 	getconf _NPROCESSORS_ONLN 2>/dev/null ||
 	    nproc 2>/dev/null ||

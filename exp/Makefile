@@ -1,6 +1,6 @@
 -include config.mk
 
-CONFIGS := bvcheck-lrat cake_lpr-lrat lrat_isa-lrat lrat-trim-lrat
+CONFIGS := bv_check-lrat cake_lpr-lrat lrat_isa-lrat lrat-trim-lrat
 DATA    := $(addprefix log-,$(addsuffix /data,$(CONFIGS)))
 
 data: $(DATA)
@@ -12,9 +12,9 @@ log-%/data: benchmarks-cadical
 	../bin/parallel.sh benchmarks-$* log-$*
 
 benchmarks-cadical: make_benchmarks.sh aiger certificates
-	# ./make_benchmarks.sh
-	# ../bin/pack.py --time 600 data benchmarks-*
-
+	./make_benchmarks.sh
+	../bin/pack.py --time 200 data benchmarks-*
+	../bin/pack.py --time 200 data-cadical benchmarks-cadical
 HWMCC24 := https://zenodo.org/records/14775242/files
 aiger:
 	wget -nc $(HWMCC24)/benchmarks_aiger.tar.gz

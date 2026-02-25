@@ -1,0 +1,7 @@
+name = "bv_check"
+version = "0.1.0"
+defaultTargets = ["bv_check"]
+
+[[lean_exe]]
+name = "bv_check"
+root = "Main"
