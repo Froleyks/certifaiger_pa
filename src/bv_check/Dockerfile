@@ -1,4 +1,4 @@
-FROM debian:trixie-slim
+FROM debian:trixie-slim AS builder
 
 ARG LEAN_TOOLCHAIN=leanprover/lean4:stable
 ENV DEBIAN_FRONTEND=noninteractive
@@ -6,10 +6,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
       bash ca-certificates curl git \
       libgmp10 \
-      unzip xz-utils zstd \
+      unzip xz-utils zstd zsh \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Install Lean toolchain (download via elan), then vendor it into /opt/lean ---
+# Install Lean toolchain (via elan), then vendor it into /opt/lean.
 ENV ELAN_HOME=/tmp/elan
 ENV PATH=${ELAN_HOME}/bin:$PATH
 RUN curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
@@ -29,6 +29,19 @@ ENV PATH=/opt/lean/bin:$PATH
 
 WORKDIR /app
 COPY . .
-RUN lake build
+RUN lake build \
+    && install -D /app/.lake/build/bin/bv_check /out/bv_check \
+    && install -D /opt/lean/lib/libleanshared.so /out/lib/libleanshared.so
 
-CMD ./.lake/build/bin/bv_check
+FROM debian:trixie-slim AS runtime
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      libgmp10 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /out/bv_check /usr/local/bin/bv_check
+COPY --from=builder /out/lib/libleanshared.so /opt/lean/lib/libleanshared.so
+ENV LD_LIBRARY_PATH=/opt/lean/lib
+
+CMD ["/usr/local/bin/bv_check"]
