@@ -41,9 +41,8 @@ certifaiger:
 	cd certifaiger/build/
 	cp aigsplit aigtocnf certifaiger runlim limit $(bin)
 bv_check:
-	cd bv_check
-	lake build
-	cp .lake/build/bin/bv_check $(bin)
+	$(MAKE) -C bv_check
+	cp bv_check/bv_check.sif $(bin)/bv_check
 
 clean:
 	rm -rf cake_lpr lrat_isa cadical lrat-trim certifaiger
