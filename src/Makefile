@@ -9,7 +9,7 @@ else
   STATIC_FLAG := -static
 endif
 
-all: cake_lpr lrat_isa cadical lrat-trim certifaiger
+all: cake_lpr lrat_isa cadical lrat-trim certifaiger bv_check
 cake_lpr:
 	-git clone https://github.com/tanyongkiam/cake_lpr
 	cd cake_lpr
@@ -42,7 +42,7 @@ certifaiger:
 	cp aigsplit aigtocnf certifaiger runlim limit $(bin)
 bv_check:
 	$(MAKE) -C bv_check
-	cp bv_check/bv_check.sif $(bin)/bv_check
+	cp bv_check/.lake/build/bin/bv_check $(bin)
 
 clean:
 	rm -rf cake_lpr lrat_isa cadical lrat-trim certifaiger
